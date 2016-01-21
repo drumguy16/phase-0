@@ -25,7 +25,7 @@ puts "Well a bigger, more bad ass number would be #{new_num}!"
 #  A local variable holds a value or string of characters. You can't make a variable do something to another object. A method is like a set of instructions that can be called upon to do something to another object....like a variable.
 
 #How do you run a ruby program from the command line?
-#  you can run a ruby program from the command line by typing: ruby name_of_program.rb
+# you can run a ruby program from the command line by typing: ruby name_of_program.rb
 
 #How do you run an RSpec file from the command line?
 #RSpec is run from the command line by typing: rspec name_of_spec.rb
