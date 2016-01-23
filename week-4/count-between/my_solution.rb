@@ -23,7 +23,4 @@ def count_between(list_of_integers, lower_bound, upper_bound)
 		end
 	end
 	p new_list.count
-	
-	
-
 end
