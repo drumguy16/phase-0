@@ -4,84 +4,83 @@
 # We spent [#] hours on this challenge.
 
 # EXPLANATION OF require_relative
+#require_relative requires a certain file in order to gain access to the current file.  Require requires direct path to file that is to be required.
 #
-#
-require_relative 'state_data'
 
 class VirusPredictor
-
-  def initialize(state_of_origin, population_density, population)
-    @state = state_of_origin
-    @population = population
-    @population_density = population_density
+# initializes class with required arguments
+  def initialize(state)
+    @state = state
+    @population = STATE_DATA[state][:population]
+    @population_density = STATE_DATA[state][:population_density]
   end
+# Returns output of predicted_deaths and speed_of_spread methods
 
   def virus_effects
-    predicted_deaths(@population_density, @population, @state)
-    speed_of_spread(@population_density, @state)
+    num_of_death = predicted_deaths
+    speed = speed_of_spread
+    print "#{@state} will lose #{num_of_death} people in this outbreak and will spread across the state in #{speed} months.\n\n"
   end
 
-  private
-
-  def predicted_deaths(population_density, population, state)
-    # predicted deaths is solely based on population density
-    if @population_density >= 200
-      number_of_deaths = (@population * 0.4).floor
-    elsif @population_density >= 150
-      number_of_deaths = (@population * 0.3).floor
-    elsif @population_density >= 100
-      number_of_deaths = (@population * 0.2).floor
-    elsif @population_density >= 50
-      number_of_deaths = (@population * 0.1).floor
-    else
-      number_of_deaths = (@population * 0.05).floor
+  # private
+# Calcaculates expected number of deaths using population_density, population and state
+  def predicted_deaths  
+    case @population_density
+    when (0..49)
+      rate = 0.05
+    when (50..99)
+      rate = 0.1
+    when (100..149)
+      rate = 0.2
+    when (150..199)
+      rate = 0.3
+    else #(200+)
+      rate = 0.4
     end
-
-    print "#{@state} will lose #{number_of_deaths} people in this outbreak"
-
+    (@population * rate).floor
   end
-
-  def speed_of_spread(population_density, state) #in months
+# Calculates how quickly it spreads over months
+  def speed_of_spread #in months
     # We are still perfecting our formula here. The speed is also affected
     # by additional factors we haven't added into this functionality.
-    speed = 0.0
 
-    if @population_density >= 200
-      speed += 0.5
-    elsif @population_density >= 150
-      speed += 1
-    elsif @population_density >= 100
-      speed += 1.5
-    elsif @population_density >= 50
-      speed += 2
-    else
-      speed += 2.5
+    case @population_density
+    when (0..49)
+      2.5
+    when (50..99)
+      2
+    when (100..149)
+      1.5
+    when (150..199)
+      1
+    else #(200+)
+      0.5
     end
-
-    puts " and will spread across the state in #{speed} months.\n\n"
-
   end
 
 end
 
-#=======================================================================
+STATE_DATA.each do |state, hash|
+  state = VirusPredictor.new(state)
+  state.virus_effects
+end
 
-# DRIVER CODE
- # initialize VirusPredictor for each state
-
-
-alabama = VirusPredictor.new("Alabama", STATE_DATA["Alabama"][:population_density], STATE_DATA["Alabama"][:population])
-alabama.virus_effects
-
-jersey = VirusPredictor.new("New Jersey", STATE_DATA["New Jersey"][:population_density], STATE_DATA["New Jersey"][:population])
-jersey.virus_effects
-
-california = VirusPredictor.new("California", STATE_DATA["California"][:population_density], STATE_DATA["California"][:population])
-california.virus_effects
-
-alaska = VirusPredictor.new("Alaska", STATE_DATA["Alaska"][:population_density], STATE_DATA["Alaska"][:population])
-alaska.virus_effects
 
 
 #=======================================================================
 # Reflection Section
+
+# What are the differences between the two different hash syntaxes shown in the state_data file?
+# The outer hash uses standard hash notation with standard keys. The nested hash uses symbols as keys. Symbols are stored in ruby as one object. When strings or other keys are used, they create a new object each time they are used, which eats up a lot of memory.
+
+# What does require_relative do? How is it different from require?
+# require relative requires a paired file to present in order to grant access to current file. Require requires a specific path. 
+
+# What are some ways to iterate through a hash?
+#  You can use the each do method which requires a key and value pair as an argument. You can also use the #map method, whichalso accepts a key, value pair and passes them through a block of code.
+
+# When refactoring virus_effects, what stood out to you about the variables, if anything?
+# They were kind of reassigning instance variables that had already been assigned in the initialize method. This seemed redundant.
+
+# What concept did you most solidify in this challenge?
+# This challenge solidified a few different concepts for me including; private, and require vs. require_relative. I think the process I gained most clarity from was refactoring. I saw many more options for refactoring in this challenge than in previous challenges.
